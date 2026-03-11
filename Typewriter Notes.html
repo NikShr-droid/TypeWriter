@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Typewriter</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<!-- <style>
+  :root {
+    --paper: #f5f0e8;
+    --paper-dark: #e8e0cc;
+    --ink: #1a1209;
+    --ink-faded: #4a3f2f;
+    --ribbon: #c0392b;
+    --key: #2c2416;
+    --cream: #faf6ee;
+    --correct: #2a5c2a;
+    --wrong:   #8b1a1a;
+    --pending: #b0a080;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #1a1209;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px);
+    min-height: 100vh;
+    font-family: 'Courier Prime', monospace;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px 80px;
+  }
+
+  /* ══ HEADER ══ */
+  header { text-align: center; margin-bottom: 36px; }
+  .brand {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: var(--paper);
+    letter-spacing: 0.12em;
+    text-shadow: 2px 2px 0 #000, 0 0 40px rgba(245,240,232,0.15);
+    display: inline-block;
+  }
+  .brand::after { content: '™'; font-size: 0.35em; vertical-align: super; color: #4a3f2f; opacity: 0.6; }
+  .tagline { color: #6b5c45; font-size: 0.8rem; letter-spacing: 0.25em; text-transform: uppercase; margin-top: 6px; }
+
+  /* ══ MODE TOGGLE ══ */
+  .mode-toggle {
+    display: flex; gap: 0; margin-bottom: 28px;
+    border: 1px solid #3d2d1a; border-radius: 4px; overflow: hidden;
+  }
+  .mode-btn {
+    font-family: 'Special Elite', cursive;
+    font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase;
+    background: #18120a; color: #5a4530;
+    border: none; cursor: pointer;
+    padding: 9px 22px;
+    transition: background 0.2s, color 0.2s;
+    border-right: 1px solid #3d2d1a;
+  }
+  .mode-btn:last-child { border-right: none; }
+  .mode-btn.active { background: #2e2010; color: var(--paper); }
+  .mode-btn:hover:not(.active) { background: #221810; color: #9a8060; }
+
+  /* ══ MACHINE BODY ══ */
+  .machine {
+    background: linear-gradient(160deg, #2e2010 0%, #1e1508 60%, #14100a 100%);
+    border-radius: 12px 12px 24px 24px;
+    padding: 28px 28px 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.07);
+    width: 100%; max-width: 700px;
+    position: relative; border: 1px solid #3d2d1a;
+  }
+  .machine::before {
+    content: ''; position: absolute;
+    top: -8px; left: 40px; right: 40px; height: 8px;
+    background: linear-gradient(90deg, #1a1005, #2e2010, #1a1005);
+    border-radius: 4px 4px 0 0;
+    border: 1px solid #3d2d1a; border-bottom: none;
+  }
+
+  /* ══ PAPER SLOT ══ */
+  .paper-slot {
+    background: linear-gradient(180deg, #d4c9b0, #f5f0e8 10px);
+    border-radius: 3px 3px 0 0;
+    padding: 0 16px; position: relative; overflow: hidden;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.06);
+  }
+  .paper-roll-top {
+    height: 14px;
+    background: linear-gradient(180deg, #b8aa8e, #d0c4a8);
+    margin: 0 -16px;
+    display: flex; align-items: center; gap: 7px; padding: 0 20px;
+    border-bottom: 1px solid #bfb090;
+  }
+  .roll-tooth { width: 3px; height: 7px; background: #8a7a60; border-radius: 0 0 2px 2px; flex-shrink: 0; }
+
+  /* ══ CARRIAGE ARM ══ */
+  .carriage-arm-wrap {
+    position: absolute; top: 14px; left: 16px; right: 16px;
+    height: 0; pointer-events: none; z-index: 10;
+  }
+  .carriage-arm {
+    position: absolute; top: 0; left: 0;
+    width: 22px; height: 32px;
+    display: flex; flex-direction: column; align-items: center;
+    will-change: left, margin-top; transition: left 0.04s linear;
+  }
+  .arm-stem { width: 3px; height: 18px; background: linear-gradient(180deg, #6a4a28, #3a2410); border-radius: 2px 2px 0 0; box-shadow: 1px 0 3px rgba(0,0,0,0.5); }
+  .arm-head { width: 13px; height: 13px; background: radial-gradient(circle at 38% 30%, #8a5a28, #3a1e08); border-radius: 2px; box-shadow: 0 2px 6px rgba(0,0,0,0.6); position: relative; }
+  .arm-head::after { content: ''; position: absolute; bottom: 0; left: 1px; right: 1px; height: 3px; background: var(--ribbon); border-radius: 0 0 1px 1px; opacity: 0; }
+  .arm-head.striking::after { opacity: 1; }
+
+  /* ══ PAPER DISPLAY ══ */
+  .paper-display-wrap { position: relative; min-height: 280px; cursor: text; }
+  .paper-display {
+    width: 100%; min-height: 280px;
+    background: var(--cream);
+    background-image: linear-gradient(var(--paper-dark) 1px, transparent 1px);
+    background-size: 100% 28px; background-position: 0 27px;
+    padding: 27px 20px 20px; position: relative;
+    font-family: 'Special Elite', cursive; font-size: 1rem; line-height: 28px;
+    color: var(--ink); letter-spacing: 0.05em; word-break: break-word; white-space: pre-wrap;
+  }
+  .paper-display.feed { animation: paperFeed 0.2s ease-out; }
+  @keyframes paperFeed { 0%{transform:translateY(0)} 35%{transform:translateY(-6px)} 100%{transform:translateY(0)} }
+  .paper-display.thud { animation: paperThud 0.09s ease-out; }
+  @keyframes paperThud { 0%{transform:translateX(0) rotate(0)} 40%{transform:translateX(1.5px) rotate(0.05deg)} 80%{transform:translateX(-0.5px) rotate(-0.02deg)} 100%{transform:translateX(0) rotate(0)} }
+
+  .hidden-input { position: absolute; opacity: 0; width: 1px; height: 1px; top: 40px; left: 40px; font-size: 16px; pointer-events: none; }
+
+  /* ══ NOTE MODE CHARACTERS ══ */
+  .char { display: inline; }
+  .char.new { animation: stamp 0.13s cubic-bezier(0.18, 0.55, 0.35, 1.1) both; }
+  @keyframes stamp {
+    0%   { opacity:0; transform:scaleY(1.6) scaleX(0.65); filter:blur(1.5px); }
+    45%  { opacity:1; transform:scaleY(0.82) scaleX(1.12); filter:blur(0); }
+    70%  { transform:scaleY(1.04) scaleX(0.97); }
+    100% { transform:scaleY(1) scaleX(1); }
+  }
+  .char.smear { text-shadow: 1.5px 0 3px rgba(26,18,9,0.35); }
+  .char.heavy { text-shadow: 0 0 1px rgba(26,18,9,0.8); }
+  .char.faint { opacity: 0.68; }
+
+  .ink-dot { position: absolute; border-radius: 50%; background: rgba(26,18,9,0.6); pointer-events: none; animation: inkFade 0.55s ease-out forwards; }
+  @keyframes inkFade { 0%{opacity:1;transform:scale(1)} 100%{opacity:0;transform:scale(2.8)} }
+
+  .cursor { display: inline-block; width: 2px; height: 0.9em; background: var(--ribbon); margin-left: 1px; vertical-align: text-bottom; animation: blink 0.85s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .cursor.typing { animation: none; opacity: 1; }
+
+  .placeholder-text { color: #b0a080; font-style: italic; font-family: 'Special Elite', cursive; font-size: 1rem; line-height: 1.8; pointer-events: none; user-select: none; white-space: pre-line; }
+
+  /* ══ PRACTICE MODE OVERLAY ══ */
+  /* Target text shown faintly */
+  .practice-target {
+    font-family: 'Special Elite', cursive; font-size: 1rem; line-height: 28px;
+    letter-spacing: 0.05em; white-space: pre-wrap; word-break: break-word;
+    pointer-events: none; user-select: none;
+  }
+  /* Each target char gets a state class */
+  .tc { display: inline; position: relative; }
+  .tc.pending { color: var(--pending); }
+  .tc.correct { color: var(--correct); }
+  .tc.wrong   {
+    color: var(--wrong);
+    text-decoration: underline;
+    text-decoration-color: rgba(139,26,26,0.5);
+  }
+  .tc.cursor-here {
+    position: relative;
+  }
+  .tc.cursor-here::before {
+    content: '';
+    position: absolute;
+    left: -1px; top: 0.05em; bottom: 0.05em;
+    width: 2px;
+    background: var(--ribbon);
+    animation: blink 0.85s step-end infinite;
+  }
+  /* Wrong char stamp flash */
+  .tc.wrong.new { animation: wrongStamp 0.15s ease-out both; }
+  @keyframes wrongStamp {
+    0%   { background: rgba(139,26,26,0.25); border-radius: 1px; }
+    100% { background: transparent; }
+  }
+  .tc.correct.new { animation: correctStamp 0.12s cubic-bezier(0.18, 0.55, 0.35, 1.1) both; }
+  @keyframes correctStamp {
+    0%   { opacity:0; transform:scaleY(1.5) scaleX(0.7); }
+    50%  { opacity:1; transform:scaleY(0.85) scaleX(1.1); }
+    100% { transform:scaleY(1) scaleX(1); }
+  }
+
+  /* ══ CARRIAGE BAR ══ */
+  .carriage-bar { height: 16px; background: linear-gradient(180deg, #3d2d1a, #2c1f0f); border-radius: 0 0 2px 2px; margin: 0 -16px; display: flex; align-items: center; padding: 0 20px; gap: 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
+  .carriage-dot { width: 4px; height: 4px; border-radius: 50%; background: #5a4020; }
+
+  /* ══ CONTROLS ══ */
+  .controls { display: flex; gap: 10px; align-items: center; margin-top: 18px; flex-wrap: wrap; }
+  .title-input {
+    flex: 1; min-width: 160px; background: transparent; border: none;
+    border-bottom: 1px solid #4a3520; color: var(--paper);
+    font-family: 'Special Elite', cursive; font-size: 0.9rem; padding: 6px 4px;
+    outline: none; letter-spacing: 0.08em;
+  }
+  .title-input::placeholder { color: #5a4530; }
+  .title-input:focus { border-color: #8a6540; }
+
+  .btn {
+    font-family: 'Special Elite', cursive; font-size: 0.8rem; letter-spacing: 0.12em;
+    text-transform: uppercase; border: none; cursor: pointer; padding: 8px 18px;
+    border-radius: 3px; transition: all 0.1s; user-select: none;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-save { background: var(--ribbon); color: #fff; box-shadow: 0 3px 0 #7a1f12, 0 4px 8px rgba(0,0,0,0.4); }
+  .btn-save:hover { background: #d44030; }
+  .btn-save:active { box-shadow: 0 0 0 #7a1f12; }
+  .btn-clear { background: #2c2416; color: #8a7a60; box-shadow: 0 3px 0 #18140c, 0 4px 8px rgba(0,0,0,0.3); border: 1px solid #3d2d1a; }
+  .btn-clear:hover { background: #3d3220; color: #b0a070; }
+  .btn-clear:active { box-shadow: 0 0 0 #18140c; }
+  .btn-practice { background: #1a2e18; color: #6a9a60; box-shadow: 0 3px 0 #0e1a0c, 0 4px 8px rgba(0,0,0,0.3); border: 1px solid #2a4a28; }
+  .btn-practice:hover { background: #243e22; color: #8aba78; }
+  .btn-practice:active { box-shadow: 0 0 0 #0e1a0c; }
+
+  /* ══ TIME MODE SELECTOR ══ */
+  .time-modes {
+    display: flex; gap: 0; margin-top: 14px;
+    border: 1px solid #3d2d1a; border-radius: 4px; overflow: hidden;
+    width: 100%;
+  }
+  .time-btn {
+    flex: 1;
+    font-family: 'Special Elite', cursive;
+    font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+    background: #18120a; color: #5a4530;
+    border: none; border-right: 1px solid #3d2d1a;
+    cursor: pointer; padding: 7px 4px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .time-btn:last-child { border-right: none; }
+  .time-btn.active { background: #1a2e18; color: #8aba78; }
+  .time-btn:hover:not(.active) { background: #221810; color: #9a8060; }
+
+  /* Countdown clock display */
+  .countdown-wrap {
+    display: none; align-items: center; gap: 8px;
+    margin-left: auto;
+  }
+  .countdown-wrap.visible { display: flex; }
+  .countdown-clock {
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.4rem; font-weight: 700;
+    color: #e8c870; letter-spacing: 0.05em; line-height: 1;
+    text-shadow: 0 0 10px rgba(232,200,112,0.5);
+    min-width: 38px; text-align: right;
+    transition: color 0.3s;
+  }
+  .countdown-clock.urgent { color: #e87040; text-shadow: 0 0 12px rgba(232,112,64,0.7); animation: urgentPulse 0.5s ease-in-out infinite alternate; }
+  @keyframes urgentPulse { from { opacity:1; } to { opacity:0.6; } }
+  .countdown-label { font-family: 'Special Elite', cursive; font-size: 0.55rem; color: #5a4530; letter-spacing: 0.16em; text-transform: uppercase; }
+
+  /* ══ PRACTICE STATS BAR ══ */
+  .practice-stats {
+    display: none;
+    gap: 20px; align-items: center;
+    margin-top: 14px; flex-wrap: wrap;
+    padding: 10px 14px;
+    background: #18120a;
+    border: 1px solid #3d2d1a;
+    border-radius: 4px;
+  }
+  .practice-stats.visible { display: flex; }
+  .stat-block { display: flex; flex-direction: column; align-items: center; min-width: 52px; }
+  .stat-value {
+    font-family: 'Courier Prime', monospace; font-size: 1.3rem; font-weight: 700;
+    color: #e8c870; letter-spacing: 0.05em; line-height: 1;
+    text-shadow: 0 0 8px rgba(232,200,112,0.4);
+  }
+  .stat-value.good   { color: #7aba60; text-shadow: 0 0 8px rgba(122,186,96,0.4); }
+  .stat-value.warn   { color: #e87040; text-shadow: 0 0 8px rgba(232,112,64,0.4); }
+  .stat-label { font-family: 'Special Elite', cursive; font-size: 0.55rem; color: #5a4530; letter-spacing: 0.16em; text-transform: uppercase; margin-top: 3px; }
+  .stat-divider { width: 1px; height: 36px; background: #3d2d1a; flex-shrink: 0; }
+
+  /* Progress bar */
+  .progress-wrap { flex: 1; min-width: 80px; }
+  .progress-label { font-family: 'Special Elite', cursive; font-size: 0.55rem; color: #5a4530; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 4px; }
+  .progress-track { height: 4px; background: #2c1f0f; border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #e8c870; border-radius: 2px; transition: width 0.2s ease-out; width: 0%; }
+
+  /* ══ RESULTS OVERLAY ══ */
+  .results-overlay {
+    display: none;
+    position: absolute; inset: 0;
+    background: rgba(250,246,238,0.97);
+    z-index: 20;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px; padding: 30px;
+    border-radius: 0;
+    animation: resultsIn 0.3s ease-out;
+  }
+  .results-overlay.visible { display: flex; }
+  @keyframes resultsIn { from { opacity:0; transform: scale(0.97); } to { opacity:1; transform:scale(1); } }
+
+  .results-title {
+    font-family: 'Special Elite', cursive; font-size: 1.3rem;
+    color: var(--ink); letter-spacing: 0.2em; text-transform: uppercase;
+    border-bottom: 2px solid var(--paper-dark); padding-bottom: 10px; width: 100%; text-align: center;
+  }
+  .results-grid { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; }
+  .result-stat { text-align: center; }
+  .result-num { font-family: 'Courier Prime', monospace; font-size: 2.2rem; font-weight: 700; color: var(--ink); line-height: 1; }
+  .result-num.accent { color: var(--ribbon); }
+  .result-num.good   { color: var(--correct); }
+  .result-lbl { font-family: 'Special Elite', cursive; font-size: 0.65rem; color: var(--ink-faded); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 4px; }
+  .results-msg { font-family: 'Special Elite', cursive; font-size: 0.85rem; color: var(--ink-faded); letter-spacing: 0.1em; font-style: italic; text-align: center; }
+
+  /* ══ NOTES BOARD ══ */
+  .notes-section { width: 100%; max-width: 700px; }
+  .notes-header { margin-top: 52px; margin-bottom: 20px; display: flex; align-items: baseline; gap: 16px; }
+  .notes-header h2 { font-family: 'Special Elite', cursive; color: var(--paper); font-size: 1.1rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; }
+  .note-count { font-size: 0.7rem; color: #5a4530; letter-spacing: 0.1em; }
+  .btn-export-all {
+    margin-left: auto;
+    font-family: 'Special Elite', cursive; font-size: 0.7rem; letter-spacing: 0.14em;
+    text-transform: uppercase; border: 1px solid #3a5a30; background: #18120a;
+    color: #6a8a58; cursor: pointer; padding: 5px 14px; border-radius: 3px;
+    transition: all 0.15s;
+  }
+  .btn-export-all:hover { background: #1e2e18; color: #8aba78; border-color: #4a7a38; }
+  .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+
+  .note-card {
+    background: var(--paper); padding: 20px 20px 40px; position: relative;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.2), 4px 4px 12px rgba(0,0,0,0.3);
+    animation: noteIn 0.3s ease-out; transform-origin: top center;
+    transition: transform 0.25s, box-shadow 0.25s; border-top: 4px solid transparent;
+    display: flex; flex-direction: column;
+  }
+  .note-card:hover { box-shadow: 6px 10px 24px rgba(0,0,0,0.45); }
+
+  /* SVG paperclip replaces the red dot */
+  .note-card::before { display: none; }
+  .note-clip {
+    position: absolute; top: -18px; right: 16px;
+    width: 18px; height: 36px;
+    pointer-events: none; z-index: 2;
+    filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.35));
+  }
+
+  .note-card:nth-child(5n)   { transform: rotate(-2.2deg); border-top-color: var(--ribbon); }
+  .note-card:nth-child(5n+1) { transform: rotate(1.6deg);  border-top-color: #2c5f3f; }
+  .note-card:nth-child(5n+2) { transform: rotate(-1.0deg); border-top-color: #1a3a6b; }
+  .note-card:nth-child(5n+3) { transform: rotate(2.5deg);  border-top-color: #6b3a1a; }
+  .note-card:nth-child(5n+4) { transform: rotate(-1.7deg); border-top-color: #4a1a6b; }
+  .note-card:nth-child(5n):hover   { transform: translateY(-4px) rotate(-2.2deg); }
+  .note-card:nth-child(5n+1):hover { transform: translateY(-4px) rotate(1.6deg); }
+  .note-card:nth-child(5n+2):hover { transform: translateY(-4px) rotate(-1.0deg); }
+  .note-card:nth-child(5n+3):hover { transform: translateY(-4px) rotate(2.5deg); }
+  .note-card:nth-child(5n+4):hover { transform: translateY(-4px) rotate(-1.7deg); }
+
+  .note-title { font-family: 'Special Elite', cursive; font-size: 1.05rem; color: var(--ink); margin-bottom: 10px; letter-spacing: 0.05em; border-bottom: 1px solid var(--paper-dark); padding-bottom: 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .note-body { font-family: 'Special Elite', cursive; font-size: 0.8rem; color: var(--ink-faded); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-wrap; word-break: break-word; flex: 1; }
+  .note-footer { position: absolute; bottom: 10px; left: 14px; right: 10px; display: flex; align-items: center; justify-content: space-between; }
+  .note-date { font-size: 0.65rem; color: #9a8870; letter-spacing: 0.08em; }
+
+  /* Both icons matched — same size, same muted colour, fade in on hover */
+  .note-actions { display: flex; align-items: center; gap: 2px; }
+  .note-icon-btn {
+    background: none; border: none; cursor: pointer;
+    color: #a09070; opacity: 0;
+    transition: opacity 0.2s, color 0.2s;
+    padding: 3px; line-height: 1; display: flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+  }
+  .note-card:hover .note-icon-btn { opacity: 0.45; }
+  .note-icon-btn:hover { opacity: 1 !important; }
+  .note-icon-btn.export:hover { color: #7aba60; }
+  .note-icon-btn.delete:hover { color: var(--ribbon); }
+  @keyframes noteIn { from{opacity:0;transform:scale(0.92) translateY(10px)} to{opacity:1} }
+
+  .empty-state { grid-column: 1/-1; text-align: center; color: #3d2d1a; font-family: 'Special Elite', cursive; font-size: 0.9rem; letter-spacing: 0.15em; padding: 40px; border: 1px dashed #3d2d1a; border-radius: 2px; line-height: 2; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--key); color: var(--paper); font-family: 'Special Elite', cursive; font-size: 0.8rem; letter-spacing: 0.12em; padding: 10px 24px; border-radius: 3px; box-shadow: 0 4px 16px rgba(0,0,0,0.5); opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; border-left: 3px solid var(--ribbon); }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #1a1209; }
+  ::-webkit-scrollbar-thumb { background: #3d2d1a; border-radius: 3px; }
+</style> -->
+</head>
+<body>
+
+<header>
+  <div class="brand">The Typewriter</div>
+  <div class="tagline">Your thoughts, stamped in ink</div>
+</header>
+
+<!-- Mode toggle -->
+<div class="mode-toggle">
+  <button class="mode-btn active" id="btnNoteMode" onclick="setMode('notes')">✎ Notes</button>
+  <button class="mode-btn" id="btnPracticeMode" onclick="setMode('practice')">⌨ Practice</button>
+</div>
+
+<div class="machine">
+  <div class="paper-slot">
+    <div class="paper-roll-top" id="rollTeeth"></div>
+    <div class="carriage-arm-wrap" id="carriageWrap">
+      <div class="carriage-arm" id="carriageArm">
+        <div class="arm-stem"></div>
+        <div class="arm-head" id="armHead"></div>
+      </div>
+    </div>
+
+    <!-- Paper -->
+    <div class="paper-display-wrap" id="paperWrap">
+      <div class="paper-display" id="paperDisplay"></div>
+      <!-- Results overlay sits inside paper area -->
+      <div class="results-overlay" id="resultsOverlay">
+        <div class="results-title">— Round Complete —</div>
+        <div class="results-grid" id="resultsGrid"></div>
+        <div class="results-msg" id="resultsMsg"></div>
+        <button class="btn btn-practice" onclick="startPracticeRound()">New Round</button>
+      </div>
+    </div>
+
+    <textarea class="hidden-input" id="hiddenInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+
+    <div class="carriage-bar">
+      <div class="carriage-dot"></div><div class="carriage-dot"></div><div class="carriage-dot"></div>
+    </div>
+  </div>
+
+  <!-- Notes controls -->
+  <div class="controls" id="notesControls">
+    <input class="title-input" id="noteTitle" type="text" placeholder="Untitled memo…" maxlength="60" />
+    <button class="btn btn-clear" onclick="clearNote()">Clear</button>
+    <button class="btn btn-save" onclick="saveNote()">— Save —</button>
+  </div>
+
+  <!-- Practice controls -->
+  <div id="practiceControls" style="display:none">
+    <!-- Time mode selector -->
+    <div class="time-modes">
+      <button class="time-btn active" id="timBtn0" onclick="setTimeMode(0)">∞ Free</button>
+      <button class="time-btn" id="timBtn15" onclick="setTimeMode(15)">15 sec</button>
+      <button class="time-btn" id="timBtn30" onclick="setTimeMode(30)">30 sec</button>
+      <button class="time-btn" id="timBtn60" onclick="setTimeMode(60)">60 sec</button>
+    </div>
+    <!-- Action row -->
+    <div class="controls" style="margin-top:12px">
+      <button class="btn btn-practice" onclick="startPracticeRound()">New Prompt</button>
+      <button class="btn btn-clear" onclick="resetPractice()">Reset</button>
+      <!-- Countdown sits here, visible only in timed modes -->
+      <div class="countdown-wrap" id="countdownWrap">
+        <div>
+          <div class="countdown-clock" id="countdownClock">—</div>
+          <div class="countdown-label">remaining</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Practice stats -->
+  <div class="practice-stats" id="practiceStats">
+    <div class="stat-block">
+      <div class="stat-value" id="statWPS">0.0</div>
+      <div class="stat-label">w / sec</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-block">
+      <div class="stat-value" id="statAcc">—</div>
+      <div class="stat-label">accuracy</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-block">
+      <div class="stat-value" id="statErrors">0</div>
+      <div class="stat-label">errors</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="progress-wrap">
+      <div class="progress-label">Progress</div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Notes board (hidden in practice mode) -->
+<div class="notes-section" id="notesSection">
+  <div class="notes-header">
+    <h2>Filed Notes</h2>
+    <span class="note-count" id="noteCount"></span>
+    <button class="btn-export-all" id="btnExportAll" onclick="exportAllNotes()" style="display:none">↓ Export All</button>
+  </div>
+  <div class="notes-grid" id="notesGrid"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+<!-- // ── Sprocket teeth ──
+const rollTeeth = document.getElementById('rollTeeth');
+for (let i = 0; i < 70; i++) {
+  const t = document.createElement('div');
+  t.className = 'roll-tooth';
+  rollTeeth.appendChild(t);
+}
+
+// ── Audio ──
+let audioCtx = null;
+function getCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function playKeyClick() {
+  try {
+    const ctx = getCtx(), now = ctx.currentTime;
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.09, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random()*2-1)*Math.pow(1-i/data.length,2.5);
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.18+Math.random()*0.07, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now+0.08);
+    const filt = ctx.createBiquadFilter(); filt.type='bandpass'; filt.frequency.value=800+Math.random()*600; filt.Q.value=0.7;
+    src.connect(filt); filt.connect(gain); gain.connect(ctx.destination);
+    src.start(now); src.stop(now+0.09);
+  } catch(e) {}
+}
+function playReturnBell() {
+  try {
+    const ctx = getCtx(), now = ctx.currentTime;
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type='sine'; osc.frequency.setValueAtTime(1046,now); osc.frequency.exponentialRampToValueAtTime(880,now+0.4);
+    gain.gain.setValueAtTime(0.18,now); gain.gain.exponentialRampToValueAtTime(0.001,now+0.75);
+    osc.connect(gain); gain.connect(ctx.destination); osc.start(now); osc.stop(now+0.75);
+  } catch(e) {}
+}
+function playBackspace() {
+  try {
+    const ctx = getCtx(), now = ctx.currentTime;
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type='sawtooth'; osc.frequency.value=110+Math.random()*50;
+    gain.gain.setValueAtTime(0.06,now); gain.gain.exponentialRampToValueAtTime(0.001,now+0.06);
+    osc.connect(gain); gain.connect(ctx.destination); osc.start(now); osc.stop(now+0.06);
+  } catch(e) {}
+}
+function playErrorDing() {
+  try {
+    const ctx = getCtx(), now = ctx.currentTime;
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type='square'; osc.frequency.value=200+Math.random()*30;
+    gain.gain.setValueAtTime(0.07,now); gain.gain.exponentialRampToValueAtTime(0.001,now+0.12);
+    osc.connect(gain); gain.connect(ctx.destination); osc.start(now); osc.stop(now+0.12);
+  } catch(e) {}
+}
+
+// ── App state ──
+let appMode = 'notes'; // 'notes' | 'practice'
+
+// ── Shared refs ──
+const paperDisplay = document.getElementById('paperDisplay');
+const hiddenInput  = document.getElementById('hiddenInput');
+const carriageArm  = document.getElementById('carriageArm');
+const armHead      = document.getElementById('armHead');
+
+// ── Focus ──
+function focusInput() { hiddenInput.focus(); }
+document.getElementById('paperWrap').addEventListener('click', () => {
+  if (document.getElementById('resultsOverlay').classList.contains('visible')) return;
+  focusInput();
+});
+
+// ── Carriage ──
+const CHAR_W = 11.8, LEFT_PAD = 20;
+function updateCarriage(col) {
+  const wrapW = document.getElementById('carriageWrap').offsetWidth || 620;
+  const x = Math.min(LEFT_PAD + col * CHAR_W, wrapW - 26);
+  carriageArm.style.left = x + 'px';
+}
+let strikeTimeout = null;
+function strikeArm() {
+  armHead.classList.add('striking');
+  carriageArm.style.marginTop = '-5px';
+  clearTimeout(strikeTimeout);
+  strikeTimeout = setTimeout(() => { carriageArm.style.marginTop='0px'; armHead.classList.remove('striking'); }, 90);
+}
+function spawnInkDot() {
+  if (Math.random() > 0.4) return;
+  const armRect = carriageArm.getBoundingClientRect();
+  const dispRect = paperDisplay.getBoundingClientRect();
+  const dot = document.createElement('div');
+  dot.className = 'ink-dot';
+  const size = 1 + Math.random() * 2.5;
+  dot.style.cssText = `width:${size}px;height:${size}px;left:${armRect.left-dispRect.left+5+(Math.random()-.5)*8}px;top:${armRect.bottom-dispRect.top-4+(Math.random()-.5)*6}px;`;
+  paperDisplay.appendChild(dot);
+  setTimeout(() => dot.remove(), 600);
+}
+function animatePaper(type) {
+  paperDisplay.classList.remove('thud','feed');
+  void paperDisplay.offsetWidth;
+  paperDisplay.classList.add(type);
+  setTimeout(() => paperDisplay.classList.remove(type), 250);
+}
+
+// ════════════════════════════════════
+// ── NOTES MODE ──
+// ════════════════════════════════════
+let text = '';
+let isTyping = false;
+let typingTimer = null;
+
+function rebuildDisplay(newIdx = -1) {
+  while (paperDisplay.firstChild) paperDisplay.removeChild(paperDisplay.firstChild);
+  if (!text.length) {
+    const ph = document.createElement('span');
+    ph.className = 'placeholder-text';
+    ph.textContent = 'Begin typing your note…\n\nEach keystroke leaves its mark.';
+    paperDisplay.appendChild(ph);
+    updateCarriage(0);
+    appendCursor();
+    return;
+  }
+  let col = 0;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '\n') { paperDisplay.appendChild(document.createElement('br')); col = 0; }
+    else {
+      const span = document.createElement('span');
+      span.className = 'char';
+      if (i === newIdx) {
+        span.classList.add('new');
+        const r = Math.random();
+        if (r < 0.13) span.classList.add('smear');
+        else if (r < 0.22) span.classList.add('heavy');
+        else if (r < 0.30) span.classList.add('faint');
+      }
+      span.textContent = ch;
+      paperDisplay.appendChild(span);
+      col++;
+    }
+  }
+  const lines = text.split('\n');
+  updateCarriage(lines[lines.length-1].length);
+  appendCursor();
+}
+function appendCursor() {
+  const cur = document.createElement('span');
+  cur.className = 'cursor' + (isTyping ? ' typing' : '');
+  paperDisplay.appendChild(cur);
+}
+function pulseTyping() {
+  isTyping = true;
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(() => {
+    isTyping = false;
+    const cur = paperDisplay.querySelector('.cursor');
+    if (cur) cur.className = 'cursor';
+  }, 900);
+}
+
+// ════════════════════════════════════
+// ── PRACTICE MODE ──
+// ════════════════════════════════════
+const PROMPTS = [
+  "The quick brown fox jumps over the lazy dog near the river bank.",
+  "A stitch in time saves nine, but practice makes a typist perfect.",
+  "Pack my box with five dozen liquor jugs before the storm arrives.",
+  "How vexingly quick daft zebras jump across the frozen plain.",
+  "The five boxing wizards jump quickly onto the old wooden stage.",
+  "Bright copper kettles and warm woollen mittens bring simple joys.",
+  "All good things must come to an end, though great things linger.",
+  "Sphinx of black quartz, judge my vow before the clock strikes ten.",
+  "The early bird catches the worm but the second mouse gets the cheese.",
+  "Two roads diverged in a wood, and I took the one less travelled.",
+  "In the beginning was the word, and the word was typed by hand.",
+  "Sixty zippers were quickly picked from the woven jute bag on the shelf.",
+  "Crazy Fredrick bought many very exquisite opal jewels from the vendor.",
+  "The job requires extra pluck and zeal from every young wage earner.",
+  "We promptly judged antique ivory buckles for the next prize showcase.",
+];
+
+let practiceTarget  = '';
+let practiceTyped   = '';    // what the user has typed so far
+let practiceErrors  = 0;     // cumulative wrong keystrokes
+let practiceStart   = null;  // Date.now() when first key pressed
+let practiceActive  = false;
+
+// Time mode: 0 = free, 15/30/60 = seconds
+let practiceTimeMode = 0;
+let countdownInterval = null;
+let timeRemaining = 0;
+
+function setTimeMode(secs) {
+  practiceTimeMode = secs;
+  ['0','15','30','60'].forEach(v => {
+    document.getElementById('timBtn' + v).classList.toggle('active', String(secs) === v);
+  });
+  // Show/hide countdown widget
+  document.getElementById('countdownWrap').classList.toggle('visible', secs > 0);
+  if (secs === 0) {
+    document.getElementById('countdownClock').textContent = '—';
+    document.getElementById('countdownClock').classList.remove('urgent');
+  }
+  // Restart with new mode
+  startPracticeRound();
+}
+
+function startCountdown() {
+  clearInterval(countdownInterval);
+  if (practiceTimeMode === 0) return;
+  timeRemaining = practiceTimeMode;
+  renderClock();
+  countdownInterval = setInterval(() => {
+    timeRemaining--;
+    renderClock();
+    if (timeRemaining <= 0) {
+      clearInterval(countdownInterval);
+      clearInterval(wpsDecayInterval);
+      practiceActive = false;
+      setTimeout(showPracticeResults, 200);
+    }
+  }, 1000);
+}
+
+function renderClock() {
+  const el = document.getElementById('countdownClock');
+  el.textContent = timeRemaining + 's';
+  el.classList.toggle('urgent', timeRemaining <= 5 && timeRemaining > 0);
+}
+
+// Live WPS tracking (rolling 3s window on spaces)
+let wpsTimestamps = [];
+let wpsDecayInterval = null;
+
+function startPracticeRound() {
+  // Hide results
+  document.getElementById('resultsOverlay').classList.remove('visible');
+  clearInterval(countdownInterval);
+  // Pick a random prompt (different from last)
+  let next;
+  do { next = PROMPTS[Math.floor(Math.random() * PROMPTS.length)]; } while (next === practiceTarget && PROMPTS.length > 1);
+  practiceTarget  = next;
+  practiceTyped   = '';
+  practiceErrors  = 0;
+  practiceStart   = null;
+  practiceActive  = true;
+  wpsTimestamps   = [];
+  clearInterval(wpsDecayInterval);
+  // Reset clock display without starting yet (starts on first keypress)
+  if (practiceTimeMode > 0) {
+    timeRemaining = practiceTimeMode;
+    renderClock();
+    document.getElementById('countdownClock').classList.remove('urgent');
+  }
+  updatePracticeStats();
+  renderPracticeDisplay();
+  focusInput();
+}
+
+function resetPractice() {
+  if (practiceTarget) startPracticeRound();
+}
+
+function renderPracticeDisplay() {
+  while (paperDisplay.firstChild) paperDisplay.removeChild(paperDisplay.firstChild);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'practice-target';
+
+  for (let i = 0; i < practiceTarget.length; i++) {
+    const span = document.createElement('span');
+    span.className = 'tc';
+    const ch = practiceTarget[i];
+
+    if (i < practiceTyped.length) {
+      // Already typed
+      if (practiceTyped[i] === ch) {
+        span.classList.add('correct');
+      } else {
+        span.classList.add('wrong');
+        span.textContent = ch; // show target char in red
+      }
+    } else if (i === practiceTyped.length) {
+      span.classList.add('pending', 'cursor-here');
+    } else {
+      span.classList.add('pending');
+    }
+
+    if (i === practiceTyped.length - 1) span.classList.add('new');
+    span.textContent = ch;
+    wrap.appendChild(span);
+  }
+
+  paperDisplay.appendChild(wrap);
+
+  // Move carriage to current position
+  const curLine = practiceTarget.slice(0, practiceTyped.length).split('\n');
+  updateCarriage(curLine[curLine.length-1].length);
+}
+
+function handlePracticeKey(key) {
+  if (!practiceActive) return;
+  if (document.getElementById('resultsOverlay').classList.contains('visible')) return;
+
+  // Start timer on first keystroke
+  if (practiceStart === null) {
+    practiceStart = Date.now();
+    startCountdown();
+  }
+
+  if (key === 'Backspace') {
+    if (practiceTyped.length === 0) return;
+    playBackspace();
+    practiceTyped = practiceTyped.slice(0, -1);
+    renderPracticeDisplay();
+    animatePaper('thud');
+    return;
+  }
+
+  if (key.length > 1) return; // ignore arrows etc
+
+  // Only advance if within target bounds
+  if (practiceTyped.length >= practiceTarget.length) return;
+
+  const expected = practiceTarget[practiceTyped.length];
+  const correct  = key === expected;
+
+  strikeArm();
+  animatePaper('thud');
+
+  if (correct) {
+    playKeyClick();
+    spawnInkDot();
+    if (key === ' ') {
+      const now = Date.now();
+      wpsTimestamps.push(now);
+      wpsTimestamps = wpsTimestamps.filter(t => now - t < 3000);
+      clearInterval(wpsDecayInterval);
+      wpsDecayInterval = setInterval(tickWPSDecay, 200);
+    }
+  } else {
+    playErrorDing();
+    practiceErrors++;
+  }
+
+  practiceTyped += key;
+
+  // Flash new char
+  renderPracticeDisplay();
+  // Add 'new' class to the just-typed span
+  const spans = paperDisplay.querySelectorAll('.tc');
+  const idx = practiceTyped.length - 1;
+  if (spans[idx]) spans[idx].classList.add('new');
+
+  updatePracticeStats();
+
+  // Completion check
+  if (practiceTyped.length === practiceTarget.length) {
+    clearInterval(wpsDecayInterval);
+    clearInterval(countdownInterval);
+    practiceActive = false;
+    setTimeout(showPracticeResults, 400);
+  }
+}
+
+function tickWPSDecay() {
+  const now = Date.now();
+  wpsTimestamps = wpsTimestamps.filter(t => now - t < 3000);
+  updatePracticeStats();
+  if (wpsTimestamps.length === 0) clearInterval(wpsDecayInterval);
+}
+
+function calcWPS() {
+  const now = Date.now();
+  const recent = wpsTimestamps.filter(t => now - t < 3000);
+  return recent.length / 3;
+}
+
+function calcAccuracy() {
+  if (practiceTyped.length === 0) return null;
+  const correct = practiceTyped.split('').filter((ch, i) => ch === practiceTarget[i]).length;
+  return Math.round((correct / practiceTyped.length) * 100);
+}
+
+function updatePracticeStats() {
+  const wps = calcWPS();
+  const acc = calcAccuracy();
+  const progress = practiceTarget.length ? (practiceTyped.length / practiceTarget.length) * 100 : 0;
+
+  const wpsEl = document.getElementById('statWPS');
+  wpsEl.textContent = wps.toFixed(1);
+  wpsEl.className = 'stat-value' + (wps >= 2.5 ? ' good' : wps > 0 ? '' : '');
+
+  const accEl = document.getElementById('statAcc');
+  accEl.textContent = acc !== null ? acc + '%' : '—';
+  accEl.className = 'stat-value' + (acc === null ? '' : acc >= 95 ? ' good' : acc < 80 ? ' warn' : '');
+
+  const errEl = document.getElementById('statErrors');
+  errEl.textContent = practiceErrors;
+  errEl.className = 'stat-value' + (practiceErrors > 5 ? ' warn' : practiceErrors === 0 ? ' good' : '');
+
+  document.getElementById('progressFill').style.width = progress + '%';
+}
+
+function showPracticeResults() {
+  const elapsed = practiceStart ? (Date.now() - practiceStart) / 1000 : 0;
+  // In timed mode, use the time limit as elapsed if timer ran out
+  const effectiveTime = practiceTimeMode > 0 ? Math.min(elapsed, practiceTimeMode) : elapsed;
+  // Count correctly typed words (complete words only)
+  const typedWords = practiceTyped.trim().split(/\s+/).filter(Boolean).length;
+  const wpm = effectiveTime > 0 ? Math.round((typedWords / effectiveTime) * 60) : 0;
+  const acc = calcAccuracy() ?? 100;
+  const charsTyped = practiceTyped.length;
+
+  const timedOut = practiceTimeMode > 0 && timeRemaining <= 0;
+  const titleText = timedOut ? `— Time's Up! —` : '— Round Complete —';
+  document.querySelector('.results-title').textContent = titleText;
+
+  const msgs = {
+    perfect: ["Flawless. The keys sing for you.", "Not a single error. Remarkable.", "Pure perfection — the ribbon weeps with joy."],
+    great:   ["Sharp fingers, sharper mind.", "A fine showing at the keys.", "The machine approves of your pace."],
+    good:    ["Getting there. Keep at it.", "Solid work. A few more rounds.", "The typewriter is warming to you."],
+    poor:    ["Slow down, find your rhythm.", "The keys resist haste. Try again.", "Even great typists needed practice once."],
+  };
+  const tier = acc === 100 ? 'perfect' : acc >= 90 ? 'great' : acc >= 75 ? 'good' : 'poor';
+  const msg  = msgs[tier][Math.floor(Math.random() * msgs[tier].length)];
+
+  document.getElementById('resultsGrid').innerHTML = `
+    <div class="result-stat">
+      <div class="result-num accent">${wpm}</div>
+      <div class="result-lbl">WPM</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-num ${acc >= 95 ? 'good' : ''}">${acc}%</div>
+      <div class="result-lbl">Accuracy</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-num">${practiceErrors}</div>
+      <div class="result-lbl">Errors</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-num">${effectiveTime.toFixed(1)}s</div>
+      <div class="result-lbl">Time</div>
+    </div>
+    ${practiceTimeMode > 0 ? `<div class="result-stat"><div class="result-num">${charsTyped}</div><div class="result-lbl">Chars</div></div>` : ''}
+  `;
+  document.getElementById('resultsMsg').textContent = msg;
+  document.getElementById('resultsOverlay').classList.add('visible');
+}
+
+// ════════════════════════════════════
+// ── MODE SWITCHING ──
+// ════════════════════════════════════
+function setMode(mode) {
+  appMode = mode;
+  document.getElementById('btnNoteMode').classList.toggle('active', mode === 'notes');
+  document.getElementById('btnPracticeMode').classList.toggle('active', mode === 'practice');
+  document.getElementById('notesControls').style.display   = mode === 'notes' ? '' : 'none';
+  document.getElementById('practiceControls').style.display = mode === 'practice' ? 'flex' : 'none';
+  document.getElementById('practiceStats').classList.toggle('visible', mode === 'practice');
+  document.getElementById('notesSection').style.display    = mode === 'notes' ? '' : 'none';
+  document.getElementById('resultsOverlay').classList.remove('visible');
+
+  if (mode === 'notes') {
+    clearInterval(countdownInterval);
+    rebuildDisplay();
+  } else {
+    practiceTarget = '';
+    practiceTyped  = '';
+    startPracticeRound();
+  }
+  focusInput();
+}
+
+// ════════════════════════════════════
+// ── UNIFIED KEYBOARD HANDLER ──
+// ════════════════════════════════════
+hiddenInput.addEventListener('keydown', (e) => {
+  if (appMode === 'notes') {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); saveNote(); return; }
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      if (!text.length) return;
+      playBackspace(); text = text.slice(0,-1); rebuildDisplay(); animatePaper('thud'); return;
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      playReturnBell(); text += '\n'; rebuildDisplay(text.length-1); animatePaper('feed'); pulseTyping(); return;
+    }
+    if (e.key.length > 1) return;
+    e.preventDefault();
+    playKeyClick(); strikeArm(); text += e.key; rebuildDisplay(text.length-1); spawnInkDot(); animatePaper('thud'); pulseTyping();
+  } else {
+    if (e.key === 'Backspace') { e.preventDefault(); handlePracticeKey('Backspace'); return; }
+    if (e.key.length > 1) return;
+    e.preventDefault();
+    handlePracticeKey(e.key);
+  }
+});
+
+hiddenInput.addEventListener('input', () => {
+  const val = hiddenInput.value;
+  if (!val) return;
+  hiddenInput.value = '';
+  if (appMode === 'notes') {
+    for (const ch of val) {
+      if (ch === '\n') { playReturnBell(); text += '\n'; animatePaper('feed'); }
+      else { playKeyClick(); strikeArm(); text += ch; animatePaper('thud'); }
+    }
+    rebuildDisplay(text.length-1); spawnInkDot(); pulseTyping();
+  } else {
+    for (const ch of val) handlePracticeKey(ch);
+  }
+});
+
+// ════════════════════════════════════
+// ── NOTES CRUD ──
+// ════════════════════════════════════
+let notes = [];
+try { notes = JSON.parse(localStorage.getItem('tw_notes') || '[]'); } catch(e) {}
+function saveToStorage() { try { localStorage.setItem('tw_notes', JSON.stringify(notes)); } catch(e) {} }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+function saveNote() {
+  const body = text.trim();
+  if (!body) { showToast('Nothing to save yet…'); return; }
+  const title = document.getElementById('noteTitle').value.trim() || 'Untitled Memo';
+  notes.unshift({ id: Date.now(), title, body, date: new Date().toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) });
+  saveToStorage(); renderNotes(); clearNote(true); showToast('Note filed away ✓');
+}
+function clearNote(silent = false) {
+  text = ''; rebuildDisplay(); document.getElementById('noteTitle').value = '';
+  focusInput(); if (!silent) showToast('Page cleared');
+}
+function deleteNote(id) {
+  notes = notes.filter(n => n.id !== id); saveToStorage(); renderNotes();
+}
+function renderNotes() {
+  const grid = document.getElementById('notesGrid');
+  const count = document.getElementById('noteCount');
+  count.textContent = notes.length ? `${notes.length} note${notes.length>1?'s':''}` : '';
+  document.getElementById('btnExportAll').style.display = notes.length ? '' : 'none';
+  if (!notes.length) { grid.innerHTML = '<div class="empty-state">No notes yet.<br>Roll in a fresh sheet and start typing.</div>'; return; }
+  grid.innerHTML = notes.map(n => {
+    const clipRotate = (Math.random() * 30 - 15).toFixed(1);
+    const clipRight  = (12 + Math.random() * 16).toFixed(1);
+    const clipTop    = (-20 + Math.random() * 8).toFixed(1);
+    return `
+    <div class="note-card">
+      <svg class="note-clip" style="top:${clipTop}px;right:${clipRight}px;transform:rotate(${clipRotate}deg)" viewBox="0 0 18 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 2 C5 2 2 5 2 9 L2 28 C2 32 5 35 9 35 C13 35 16 32 16 28 L16 11 C16 8 14 6 11 6 C8 6 6 8 6 11 L6 27 C6 29 7.5 30 9 30 C10.5 30 12 29 12 27 L12 12"
+          stroke="#8a7a60" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="note-title">${escHtml(n.title)}</div>
+      <div class="note-body">${escHtml(n.body)}</div>
+      <div class="note-footer">
+        <span class="note-date">${n.date}</span>
+        <div class="note-actions">
+          <button class="note-icon-btn export" onclick="exportNote(${n.id},'txt')" title="Download as .txt">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6.5 1.5 L6.5 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M3.5 6.5 L6.5 9.5 L9.5 6.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 11.5 L11 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="note-icon-btn delete" onclick="deleteNote(${n.id})" title="Discard note">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 2 L10 10 M10 2 L2 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `}).join('');
+}
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function downloadFile(filename, content) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function sanitizeFilename(title) {
+  return title.replace(/[^a-zA-Z0-9_\- ]/g, '').trim().replace(/\s+/g, '_').slice(0, 60) || 'note';
+}
+
+function exportNote(id, format) {
+  const n = notes.find(n => n.id === id);
+  if (!n) return;
+  const fname = sanitizeFilename(n.title);
+  if (format === 'txt') {
+    const content = `${n.title}\n${'─'.repeat(n.title.length)}\n${n.date}\n\n${n.body}`;
+    downloadFile(`${fname}.txt`, content);
+  } else {
+    const content = `# ${n.title}\n\n*${n.date}*\n\n${n.body}`;
+    downloadFile(`${fname}.md`, content);
+  }
+  showToast(`Exported "${n.title}" as .${format}`);
+}
+
+function exportAllNotes() {
+  if (!notes.length) return;
+  // Bundle all as a single .md file, newest first
+  const content = notes.map(n =>
+    `# ${n.title}\n\n*${n.date}*\n\n${n.body}`
+  ).join('\n\n---\n\n');
+  const date = new Date().toISOString().slice(0, 10);
+  downloadFile(`typewriter-notes-${date}.md`, content);
+  showToast(`Exported ${notes.length} note${notes.length > 1 ? 's' : ''}`);
+}
+
+// ── Init ──
+rebuildDisplay();
+renderNotes();
+setTimeout(focusInput, 100);
+</script> -->
+</body>
+</html>
